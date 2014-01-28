@@ -1,0 +1,15 @@
+{
+    "name": "atricore/josso-php-agent",
+    "description": "PHP Single Sign-On Agent.",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "PHP Single Sign-On Agent",
+            "email": "atricore@atricore.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+
+    }
+}
