@@ -200,7 +200,7 @@ class jossoagent  {
     /**
      * @return jossoagent a new Josso PHP Agent instance.
      */
-    function getNewInstance() {
+    public static function getNewInstance() {
         // Get config variable values from josso.inc.
         global $josso_gatewayLoginUrl, $josso_gatewayLogoutUrl, $josso_endpoint, $josso_wsdl_url, $josso_proxyhost,
         $josso_proxyport, $josso_proxyusername, $josso_proxypassword, $josso_agentBasecode, $josso_p3pHeaderValue,
@@ -320,16 +320,16 @@ class jossoagent  {
         }
 
         // SOAP Invocation
-        $soapclient = $this->getIdentityMgrSoapClient();
+        $nusoap_client = $this->getIdentityMgrnusoap_client();
 
         if (isset($this->wsdlUrl))
             $findUserInSessionRequest = array('FindUserInSessionRequest' => array('ssoSessionId' => $sessionId, 'requester' => $this->getRequester()));
         else
             $findUserInSessionRequest = array('FindUserInSession' => array('ssoSessionId' => $sessionId, 'requester' => $this->getRequester()));
-        $findUserInSessionResponse  = $soapclient->call('findUserInSession', $findUserInSessionRequest,
+        $findUserInSessionResponse  = $nusoap_client->call('findUserInSession', $findUserInSessionRequest,
             'urn:org:josso:gateway:ws:1.2:protocol', '', false, null, 'document', 'literal');
 
-        if (! $this->checkError($soapclient)) {
+        if (! $this->checkError($nusoap_client)) {
             return $this->newUser($findUserInSessionResponse['SSOUser']);
         }
 
@@ -349,15 +349,15 @@ class jossoagent  {
         }
 
         // SOAP Invocation
-        $soapclient = $this->getIdentityMgrSoapClient();
+        $nusoap_client = $this->getIdentityMgrnusoap_client();
         if (isset($this->wsdlUrl))
             $findUserInSessionRequest = array('FindUserInSessionRequest' => array('ssoSessionId' => $sessionId, 'requester' => $this->getRequester()));
         else
             $findUserInSessionRequest = array('FindUserInSession' => array('ssoSessionId' => $sessionId, 'requester' => $this->getRequester()));
-        $findUserInSessionResponse  = $soapclient->call('findUserInSession', $findUserInSessionRequest,
+        $findUserInSessionResponse  = $nusoap_client->call('findUserInSession', $findUserInSessionRequest,
             'urn:org:josso:gateway:ws:1.2:protocol', '', false, null, 'document', 'literal');
 
-        if (! $this->checkError($soapclient)) {
+        if (! $this->checkError($nusoap_client)) {
             return $this->newUser($findUserInSessionResponse['SSOUser']);
         }
 
@@ -398,16 +398,16 @@ class jossoagent  {
     function findRolesBySSOSessionId ($sessionId) {
 
         // SOAP Invocation
-        $soapclient = $this->getIdentityMgrSoapClient();
+        $nusoap_client = $this->getIdentityMgrnusoap_client();
         if (isset($this->wsdlUrl))
             $findRolesBySSOSessionIdRequest = array('FindRolesBySSOSessionIdRequest' => array('ssoSessionId' => $sessionId, 'requester' => $this->getRequester()));
         else
             $findRolesBySSOSessionIdRequest = array('FindRolesBySSOSessionId' => array('ssoSessionId' => $sessionId, 'requester' => $this->getRequester()));
 
-        $findRolesBySSOSessionIdResponse = $soapclient->call('findRolesBySSOSessionId', $findRolesBySSOSessionIdRequest,
+        $findRolesBySSOSessionIdResponse = $nusoap_client->call('findRolesBySSOSessionId', $findRolesBySSOSessionIdRequest,
             'urn:org:josso:gateway:ws:1.2:protocol', '', false, null, 'document', 'literal');
 
-        if (! $this->checkError($soapclient)) {
+        if (! $this->checkError($nusoap_client)) {
             // Build array of roles
             $i = 0;
             $result = $findRolesBySSOSessionIdResponse['roles'];
@@ -443,15 +443,15 @@ class jossoagent  {
         // $now = time();
 
         // Assume that _SESSION is set.
-        $soapclient = $this->getSessionMgrSoapClient();
+        $nusoap_client = $this->getSessionMgrnusoap_client();
         if (isset($this->wsdlUrl))
             $accessSessionRequest = array('AccessSessionRequest' => array('ssoSessionId' => $sessionId, 'requester' => $this->getRequester()));
         else
             $accessSessionRequest = array('AccessSession' => array('ssoSessionId' => $sessionId, 'requester' => $this->getRequester()));
-        $accessSessionResponse  = $soapclient->call('accessSession', $accessSessionRequest,
+        $accessSessionResponse  = $nusoap_client->call('accessSession', $accessSessionRequest,
             'urn:org:josso:gateway:ws:1.2:protocol', '', false, null, 'document', 'literal');
 
-        if ($this->checkError($soapclient)) {
+        if ($this->checkError($nusoap_client)) {
             return '';
         }
 
@@ -538,16 +538,16 @@ class jossoagent  {
      */
     function resolveAuthenticationAssertion($assertionId) {
         // SOAP Invocation
-        $soapclient = $this->getIdentityProvdierSoapClient();
+        $nusoap_client = $this->getIdentityProvdiernusoap_client();
 
         if (isset($this->wsdlUrl))
             $resolveAuthenticationAssertionRequest = array('ResolveAuthenticationAssertionRequest' => array('assertionId' => $assertionId, 'requester' => $this->getRequester()));
         else
             $resolveAuthenticationAssertionRequest = array('ResolveAuthenticationAssertion' => array('assertionId' => $assertionId, 'requester' => $this->getRequester()));
-        $resolveAuthenticationAssertionResponse = $soapclient->call('resolveAuthenticationAssertion', $resolveAuthenticationAssertionRequest,
+        $resolveAuthenticationAssertionResponse = $nusoap_client->call('resolveAuthenticationAssertion', $resolveAuthenticationAssertionRequest,
             'urn:org:josso:gateway:ws:1.2:protocol', '', false, null, 'document', 'literal');
 
-        if (! $this->checkError($soapclient)) {
+        if (! $this->checkError($nusoap_client)) {
             // Return SSO Session ID
             return $resolveAuthenticationAssertionResponse['ssoSessionId'];
         }
@@ -566,16 +566,16 @@ class jossoagent  {
      */
     function assertIdentityWithSimpleAuthentication($username, $password) {
         // SOAP Invocation
-        $soapclient = $this->getIdentityProvdierSoapClient();
+        $nusoap_client = $this->getIdentityProvdiernusoap_client();
 
         if (isset($this->wsdlUrl))
             $assertIdentityWithSimpleAuthenticationRequest = array('AssertIdentityWithSimpleAuthenticationRequest' => array('username' => $username, 'password' => $password));
         else
             $assertIdentityWithSimpleAuthenticationRequest = array('AssertIdentityWithSimpleAuthentication' => array('username' => $username, 'password' => $password));
-        $assertIdentityWithSimpleAuthenticationResponse = $soapclient->call('assertIdentityWithSimpleAuthentication', $assertIdentityWithSimpleAuthenticationRequest,
+        $assertIdentityWithSimpleAuthenticationResponse = $nusoap_client->call('assertIdentityWithSimpleAuthentication', $assertIdentityWithSimpleAuthenticationRequest,
             'urn:org:josso:gateway:ws:1.2:protocol', '', false, null, 'document', 'literal');
 
-        if (! $this->checkError($soapclient)) {
+        if (! $this->checkError($nusoap_client)) {
             // Return Assertion ID
             return $assertIdentityWithSimpleAuthenticationResponse['assertionId'];
         }
@@ -673,23 +673,23 @@ class jossoagent  {
     }
 
     /**
-     * Checks if an error occured with the received soapclient and stores information in agent state.
+     * Checks if an error occured with the received nusoap_client and stores information in agent state.
      *
      * @access private
      */
-    function checkError($soapclient) {
+    function checkError($nusoap_client) {
         // Clear old error/fault information.
         unset($this->fault);
         unset($this->err);
 
         // Check for a fault
-        if ($soapclient->fault) {
-            $this->fault = $soapclient->fault;
+        if ($nusoap_client->fault) {
+            $this->fault = $nusoap_client->fault;
             return TRUE;
         } else {
             // Check for errors
-            if ($soapclient->error_str != '') {
-                $this->err = $soapclient->error_str;
+            if ($nusoap_client->error_str != '') {
+                $this->err = $nusoap_client->error_str;
                 return TRUE;
             }
         }
@@ -704,15 +704,15 @@ class jossoagent  {
      *
      * @access private
      */
-    function getIdentityMgrSoapClient() {
+    function getIdentityMgrnusoap_client() {
         // Lazy load the propper soap client
         if (!isset($this->identityMgrClient)) {
             if (isset($this->wsdlUrl)) {
-                $this->identityMgrClient = new soapclient($this->wsdlUrl , true,
+                $this->identityMgrClient = new nusoap_client($this->wsdlUrl , true,
                     $this->proxyhost, $this->proxyport, $this->proxyusername, $this->proxypassword);
             }
             else {
-                $this->identityMgrClient = new soapclient($this->endpoint . $this->identityManagerServicePath, false,
+                $this->identityMgrClient = new nusoap_client($this->endpoint . $this->identityManagerServicePath, false,
                     $this->proxyhost, $this->proxyport, $this->proxyusername, $this->proxypassword);
             }
             // Sets default encoding to UTF-8 ...
@@ -727,15 +727,15 @@ class jossoagent  {
      *
      * @access private
      */
-    function getIdentityProvdierSoapClient() {
+    function getIdentityProvdiernusoap_client() {
         // Lazy load the propper soap client
         if (!isset($this->identityProviderClient)) {
             if (isset($this->wsdlUrl)) {
-                $this->identityProviderClient = new soapclient($this->wsdlUrl , true,
+                $this->identityProviderClient = new nusoap_client($this->wsdlUrl , true,
                     $this->proxyhost, $this->proxyport, $this->proxyusername, $this->proxypassword);
             }
             else {
-                $this->identityProviderClient = new soapclient($this->endpoint . $this->identityProviderServicePath, false,
+                $this->identityProviderClient = new nusoap_client($this->endpoint . $this->identityProviderServicePath, false,
                     $this->proxyhost, $this->proxyport, $this->proxyusername, $this->proxypassword);
             }
             // Sets default encoding to UTF-8 ...
@@ -751,16 +751,16 @@ class jossoagent  {
      *
      * @access private
      */
-    function getSessionMgrSoapClient() {
+    function getSessionMgrnusoap_client() {
         // Lazy load the propper soap client
         if (!isset($this->sessionMgrClient)) {
             // SSOSessionManager SOAP Client
             if (isset($this->wsdlUrl)) {
-                $this->sessionMgrClient = new soapclient($this->wsdlUrl , true,
+                $this->sessionMgrClient = new nusoap_client($this->wsdlUrl , true,
                     $this->proxyhost, $this->proxyport, $this->proxyusername, $this->proxypassword);
             }
             else {
-                $this->sessionMgrClient = new soapclient($this->endpoint . $this->sessionManagerServicePath, false,
+                $this->sessionMgrClient = new nusoap_client($this->endpoint . $this->sessionManagerServicePath, false,
                     $this->proxyhost, $this->proxyport, $this->proxyusername, $this->proxypassword);
             }
         }

@@ -33,8 +33,6 @@ require_once('class.jossoagent.php');
 require_once('class.jossouser.php');
 require_once('class.jossorole.php');
 
-require('josso-cfg.inc');
-
 $josso_isPartnerApp = TRUE;
 
 // Check if this is an ignored resource!
@@ -52,7 +50,7 @@ if ($josso_isPartnerApp) {
 
     // Only available when URI is a partner application!
     session_start();
-    $josso_agent = & jossoagent::getNewInstance();
+	$josso_agent = jossoagent::getNewInstance();
     $ssoSessionId = $josso_agent->accessSession();
 
     // Set SSO Cookie ...
@@ -129,7 +127,7 @@ function jossoRequestLogout() {
 function jossoCreateAuthenticationUrl() {
 
     // Get JOSSO Agent instance
-    $josso_agent = & jossoagent::getNewInstance();
+    $josso_agent = jossoagent::getNewInstance();
 
     $loginUrl = $josso_agent->getBaseCode().'/josso-authenticate.php';
 
@@ -144,7 +142,7 @@ function jossoCreateAuthenticationUrl() {
 function jossoCreateLoginUrl() {
 
     // Get JOSSO Agent instance
-    $josso_agent = & jossoagent::getNewInstance();
+    $josso_agent = jossoagent::getNewInstance();
 
     $currentUrl = $_SERVER['REQUEST_URI'] ;
     $loginUrl = $josso_agent->getBaseCode().'/josso-login.php'. '?josso_current_url=' .  base64_encode($currentUrl);
@@ -162,7 +160,7 @@ function jossoCreateLoginUrl() {
 function jossoCreateLogoutUrl($backToUrl) {
 
     // Get JOSSO Agent instance
-    $josso_agent = & jossoagent::getNewInstance();
+    $josso_agent = jossoagent::getNewInstance();
 
 	if (is_null($backToUrl)) {
 		$backToUrl = createBaseUrl() . $_SERVER['REQUEST_URI'] ;
@@ -180,7 +178,7 @@ function jossoRequestLoginForUrl($currentUrl, $optional = FALSE) {
     $_SESSION['JOSSO_ORIGINAL_URL'] = $currentUrl;
 
     // Get JOSSO Agent instance
-    $josso_agent = & jossoagent::getNewInstance();
+    $josso_agent = jossoagent::getNewInstance();
     $securityCheckUrl = createBaseUrl().$josso_agent->getBaseCode().'/josso-security-check.php';
 
     $loginUrl = $josso_agent->getGatewayLoginUrl(). '?josso_back_to=' . $securityCheckUrl;
@@ -197,7 +195,7 @@ function jossoRequestLoginForUrl($currentUrl, $optional = FALSE) {
 function jossoSecurityCheckUrl() {
 
     // Get JOSSO Agent instance
-    $josso_agent = & jossoagent::getNewInstance();
+    $josso_agent = jossoagent::getNewInstance();
     $securityCheckUrl = createBaseUrl().$josso_agent->getBaseCode().'/josso-security-check.php';
 
     return $securityCheckUrl;
@@ -209,7 +207,7 @@ function jossoRequestLogoutForUrl($currentUrl) {
     $_SESSION['JOSSO_ORIGINAL_URL'] = $currentUrl;
 
     // Get JOSSO Agent instance
-    $josso_agent = & jossoagent::getNewInstance();
+    $josso_agent = jossoagent::getNewInstance();
     $logoutUrl = $josso_agent->getGatewayLogoutUrl(). '?josso_back_to=' . $currentUrl;
 
     $logoutUrl = $logoutUrl . createFrontChannelParams();
@@ -240,7 +238,7 @@ function forceRedirect($url,$die=true) {
 function createBaseUrl() {
     // ReBuild securityCheck URL
     $protocol = 'http';
-    $host = $_SERVER['HTTP_HOST'];
+    $host = $_SERVER['SERVER_NAME'];
 
     if (isset($_SERVER['HTTPS'])) {
 
@@ -264,8 +262,8 @@ function createBaseUrl() {
 
 function createFrontChannelParams() {
     // Add some request parameters like host name
-    $host = $_SERVER['HTTP_HOST'];
-    $josso_agent = & jossoagent::getNewInstance();
+    $host = $_SERVER['SERVER_NAME'];
+    $josso_agent = jossoagent::getNewInstance();
     $params = '&josso_partnerapp_host=' . $host . '&josso_partnerapp_id=' . $josso_agent->getRequester();
 
     return $params;
